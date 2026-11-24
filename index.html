@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rope Pull - English Grammar</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a, #0f172a);
+            color: white;
+            text-align: center;
+        }
+
+        .game {
+            max-width: 850px;
+            margin: auto;
+            padding: 25px;
+            background: #1e293b;
+            border-radius: 20px;
+        }
+
+        h1 {
+            color: #facc15;
+            font-size: 35px;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+        }
+
+        .teams {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .team {
+            flex: 1;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .red {
+            background: #dc2626;
+        }
+
+        .blue {
+            background: #2563eb;
+        }
+
+        .score {
+            font-size: 35px;
+            margin-top: 8px;
+        }
+
+        .arena {
+            height: 130px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            background: linear-gradient(#7dd3fc 65%, #65a30d 65%);
+            margin: 25px 0;
+        }
+
+        .rope {
+            position: absolute;
+            top: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 35px;
+            white-space: nowrap;
+            transition: left .3s;
+        }
+
+        .question {
+            color: #facc15;
+            font-size: 24px;
+            margin: 25px 0;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .answers button {
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            background: #475569;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .answers button:hover {
+            background: #64748b;
+        }
+
+        .answers button:disabled {
+            cursor: default;
+        }
+
+        #message {
+            font-size: 20px;
+            min-height: 30px;
+            margin: 20px;
+        }
+
+        .next,
+        .restart {
+            padding: 13px 24px;
+            margin: 8px;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .next {
+            background: #22c55e;
+            color: white;
+        }
+
+        .restart {
+            background: #facc15;
+            color: #111827;
+        }
+
+        @media(max-width: 550px) {
+            .answers {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game">
+
+        <h1>🇬🇧 ROPE PULL</h1>
+        <h2>ENGLISH GRAMMAR GAME</h2>
+        <p class="subtitle">Answer correctly and pull the rope!</p>
+
+        <div class="teams">
+
+            <div class="team red">
+                🔴 RED TEAM
+                <div class="score" id="score1">0</div>
+            </div>
+
+            <div class="team blue">
+                🔵 BLUE TEAM
+                <div class="score" id="score2">0</div>
+            </div>
+
+        </div>
+
+        <div class="arena">
+            <div class="rope" id="rope">
+                🔴━━━━🪢━━━━🔵
+            </div>
+        </div>
+
+        <h3 id="turn">Red Team's turn</h3>
+
+        <div class="question" id="question"></div>
+
+        <div class="answers" id="answers"></div>
+
+        <div id="message">Choose the correct answer!</div>
+
+        <button class="next" onclick="nextQuestion()">
+            Next Question ➜
+        </button>
+
+        <button class="restart" onclick="restartGame()">
+            Restart ↻
+        </button>
+
+    </div>
+
+    <script>
+
+        const questions = [
+
+            {
+                q: "She ___ to school every day.",
+                a: ["go", "goes", "going", "gone"],
+                correct: 1
+            },
+
+            {
+                q: "I ___ a student.",
+                a: ["am", "is", "are", "be"],
+                correct: 0
+            },
+
+            {
+                q: "They ___ football yesterday.",
+                a: ["play", "plays", "played", "playing"],
+                correct: 2
+            },
+
+            {
+                q: "He ___ watching TV now.",
+                a: ["am", "is", "are", "be"],
+                correct: 1
+            },
+
+            {
+                q: "We ___ English tomorrow.",
+                a: ["study", "studied", "will study", "studies"],
+                correct: 2
+            },
+
+            {
+                q: "Choose the correct article: ___ apple.",
+                a: ["A", "An", "The", "No article"],
+                correct: 1
+            },
+
+            {
+                q: "What is the plural of 'child'?",
+                a: ["Childs", "Childes", "Children", "Childrens"],
+                correct: 2
+            },
+
+            {
+                q: "___ you like English?",
+                a: ["Does", "Do", "Is", "Are"],
+                correct: 1
+            },
+
+            {
+                q: "My brother ___ like coffee.",
+                a: ["don't", "doesn't", "isn't", "aren't"],
+                correct: 1
+            },
+
+            {
+                q: "What is the past form of 'go'?",
+                a: ["Goed", "Gone", "Went", "Going"],
+                correct: 2
+            },
+
+            {
+                q: "There ___ two books on the table.",
+                a: ["is", "am", "are", "be"],
+                correct: 2
+            },
+
+            {
+                q: "She has lived here ___ 2020.",
+                a: ["for", "since", "at", "on"],
+                correct: 1
+            },
+
+            {
+                q: "I ___ my homework now.",
+                a: ["do", "does", "am doing", "did"],
+                correct: 2
+            },
+
+            {
+                q: "Choose the correct pronoun: This is ___ book.",
+                a: ["I", "me", "my", "mine"],
+                correct: 2
+            },
+
+            {
+                q: "If it rains, I ___ at home.",
+                a: ["stay", "stayed", "will stay", "staying"],
+                correct: 2
+            }
+
+        ];
+
+        let current = 0;
+        let team = 1;
+        let score1 = 0;
+        let score2 = 0;
+        let position = 50;
+        let answered = false;
+        let gameOver = false;
+
+        function showQuestion() {
+
+            answered = false;
+
+            document.getElementById("question").innerText =
+                questions[current].q;
+
+            document.getElementById("turn").innerText =
+                team === 1 ? "🔴 Red Team's turn" : "🔵 Blue Team's turn";
+
+            document.getElementById("message").innerText =
+                "Choose the correct answer!";
+
+            const box = document.getElementById("answers");
+            box.innerHTML = "";
+
+            questions[current].a.forEach((answer, index) => {
+
+                const button = document.createElement("button");
+                button.innerText = answer;
+
+                button.onclick = () => checkAnswer(index, button);
+
+                box.appendChild(button);
+            });
+        }
+
+        function checkAnswer(index, button) {
+
+            if (answered || gameOver) return;
+
+            answered = true;
+
+            const correct = questions[current].correct;
+            const buttons = document.querySelectorAll(".answers button");
+
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+
+                if (i === correct) {
+                    btn.style.background = "#16a34a";
+                }
+            });
+
+            if (index === correct) {
+
+                document.getElementById("message").innerText =
+                    "✅ Correct! Your team pulls the rope!";
+
+                if (team === 1) {
+                    score1++;
+                    position -= 7;
+                } else {
+                    score2++;
+                    position += 7;
+                }
+
+            } else {
+
+                button.style.background = "#dc2626";
+
+                document.getElementById("message").innerText =
+                    "❌ Wrong answer! No point.";
+
+            }
+
+            document.getElementById("score1").innerText = score1;
+            document.getElementById("score2").innerText = score2;
+
+            position = Math.max(15, Math.min(85, position));
+
+            document.getElementById("rope").style.left =
+                position + "%";
+
+            if (position <= 15 || position >= 85) {
+                finish();
+            }
+        }
+
+        function finish() {
+
+            gameOver = true;
+
+            document.getElementById("turn").innerText =
+                "GAME OVER!";
+
+            document.getElementById("message").innerText =
+                position <= 15
+                    ? "🏆 RED TEAM WINS!"
+                    : "🏆 BLUE TEAM WINS!";
+
+            document.querySelector(".next").disabled = true;
+        }
+
+        function nextQuestion() {
+
+            if (gameOver) return;
+
+            if (!answered) {
+                document.getElementById("message").innerText =
+                    "Please answer the question first!";
+                return;
+            }
+
+            current++;
+
+            if (current >= questions.length) {
+
+                gameOver = true;
+
+                document.getElementById("question").innerText =
+                    "All questions completed!";
+
+                document.getElementById("answers").innerHTML = "";
+
+                document.getElementById("turn").innerText =
+                    "FINAL RESULT";
+
+                document.getElementById("message").innerText =
+                    score1 > score2
+                        ? "🏆 RED TEAM WINS!"
+                        : score2 > score1
+                            ? "🏆 BLUE TEAM WINS!"
+                            : "🤝 IT'S A DRAW!";
+
+                document.querySelector(".next").disabled = true;
+
+                return;
+            }
+
+            team = team === 1 ? 2 : 1;
+
+            showQuestion();
+        }
+
+        function restartGame() {
+
+            current = 0;
+            team = 1;
+            score1 = 0;
+            score2 = 0;
+            position = 50;
+            gameOver = false;
+
+            document.getElementById("score1").innerText = 0;
+            document.getElementById("score2").innerText = 0;
+            document.getElementById("rope").style.left = "50%";
+
+            document.querySelector(".next").disabled = false;
+
+            showQuestion();
+        }
+
+        showQuestion();
+
+    </script>
+
+</body>
+
+</html>
